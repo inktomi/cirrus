@@ -22,11 +22,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.inktomi.cirrus.nws.WeatherClient;
-import com.inktomi.cirrus.nws.forecast.DWML;
-import com.inktomi.cirrus.nws.forecast.Data;
-import com.inktomi.cirrus.nws.forecast.Parameters;
-import com.inktomi.cirrus.nws.forecast.TemperatureValue;
+import com.inktomi.cirrus.WeatherClient;
+import com.inktomi.cirrus.forecast.DWML;
+import com.inktomi.cirrus.forecast.Data;
+import com.inktomi.cirrus.forecast.Parameters;
+import com.inktomi.cirrus.forecast.TemperatureValue;
 
 import java.util.List;
 
