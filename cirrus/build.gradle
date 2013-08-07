@@ -1,0 +1,13 @@
+apply plugin: 'android-library'
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion "18.0.0"
+}
+
+dependencies {
+    compile project(':volley')
+    compile files(
+            'libs/simple-xml-2.7.jar'
+    )
+}
