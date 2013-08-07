@@ -26,6 +26,7 @@ import com.inktomi.cirrus.nws.WeatherClient;
 import com.inktomi.cirrus.nws.forecast.DWML;
 import com.inktomi.cirrus.nws.forecast.Data;
 import com.inktomi.cirrus.nws.forecast.Parameters;
+import com.inktomi.cirrus.nws.forecast.TemperatureValue;
 
 import java.util.List;
 
@@ -50,6 +51,11 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
      */
     private LocationClient mLocationClient;
 
+    /*
+     * Define the weather client which we'll use to talk to the National Digital Forecast Database
+     */
+    private WeatherClient mWeatherClient;
+
     private TextView mApparentTemperature;
     private TextView mHourlyMaxTemperature;
     private NetworkImageView mConditionsIcon;
@@ -64,6 +70,11 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
          * handle callbacks.
          */
         mLocationClient = new LocationClient(this, this, this);
+
+        /*
+         * Wire up our weather client.
+         */
+        mWeatherClient = new WeatherClient(this);
 
         // Get handles to the views.
         mApparentTemperature = (TextView) findViewById(R.id.apparent_temp);
@@ -175,8 +186,7 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
 
         Toast.makeText(this, "Location is " + getLocation().getLatitude() + ", " + getLocation().getLongitude(), Toast.LENGTH_LONG).show();
 
-        WeatherClient client = new WeatherClient(this);
-        client.getWeatherForecast(getLocation().getLatitude(), getLocation().getLongitude(),
+        mWeatherClient.getWeatherForecast(getLocation().getLatitude(), getLocation().getLongitude(), 1,
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
@@ -190,7 +200,8 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
 
                         setResponse(response);
                     }
-                });
+                }
+        );
     }
 
     private void setResponse(DWML response){
@@ -204,29 +215,18 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
             parameters = responseData.parameters.get(0);
         }
 
+        // Set the current temperature
+        TemperatureValue hourlyTemp = mWeatherClient.getCurrentTemperature(response);
+        mHourlyMaxTemperature.setText(getString(R.string.hourly_max_temp, hourlyTemp.value));
+
+        // Set the feels like temperature
+        TemperatureValue feelsLike = mWeatherClient.getFeelsLikeTemperature(response);
+        mApparentTemperature.setText(getString(R.string.apparent_temp, feelsLike.value));
+
         if( null != parameters ){
-            setTemperatureValues(parameters.temperature);
             setWeatherConditionIcon(parameters.conditionsIcon);
         } else {
             Toast.makeText(SampleActivity.this, "Got a forecast, but couldn't use it.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void setTemperatureValues(List<Parameters.Temperature> temperatures){
-        if( null != temperatures ){
-            for( int i = 0; i < temperatures.size(); i++ ){
-                Parameters.Temperature temp = temperatures.get(i);
-
-                if( null == temp.type ){
-                    continue;
-                }
-
-                if( temp.type.equals("apparent") ){
-                    mApparentTemperature.setText(getString(R.string.apparent_temp, temp.value.get(0).value));
-                } else if( temp.type.equals("hourly") ){
-                    mHourlyMaxTemperature.setText(getString(R.string.hourly_max_temp, temp.value.get(0).value));
-                }
-            }
         }
     }
 
