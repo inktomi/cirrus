@@ -1,17 +1,26 @@
 apply plugin: 'android-library'
 
-repositories {
-    mavenCentral()
-}
-
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.0.0"
+    buildToolsVersion "18.0.1"
+
+    sourceSets {
+        defaultConfig {
+            testPackageName 'com.inktomi.cirrus.test'
+        }
+        instrumentTest {
+            java.srcDirs = ['src/instrumentTest/java']
+            res.srcDirs = ['src/instrumentTest/res']
+            assets.srcDirs = ['src/instrumentTest/assets']
+            resources.srcDirs = ['src/instrumentTest/src']
+        }
+    }
 }
 
 dependencies {
     compile project(':volley')
-    compile files(
-            'libs/simple-xml-2.7.jar'
-    )
+    compile('org.simpleframework:simple-xml:2.7.1'){
+        exclude group: 'stax'
+        exclude group: 'xpp3'
+    }
 }

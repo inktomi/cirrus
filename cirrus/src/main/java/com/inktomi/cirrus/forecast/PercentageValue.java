@@ -9,8 +9,11 @@ import java.math.BigInteger;
 @Element
 public class PercentageValue {
 
-    @Text
+    @Text(required = false)
     public BigInteger value;
+
+    @Attribute(name = "nil", required = false)
+    public String nil;
 
     @Attribute(name = "upper-range", required = false)
     public Integer upperRange;

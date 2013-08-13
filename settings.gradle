@@ -1,4 +1,3 @@
 include ':cirrus-sample'
-include ':cirrus-tests'
 include ':cirrus'
 include ':volley'

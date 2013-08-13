@@ -8,12 +8,15 @@
 
 package com.inktomi.cirrus.forecast;
 
+import com.android.internal.util.Predicate;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 @Element
 public class TimeLayout {
@@ -32,4 +35,72 @@ public class TimeLayout {
 
     @Attribute(name = "summarization", required = false)
     public String summarization;
+
+    public int getIndexForTime(Date when){
+        // Are we looking for a range between START and END?
+        if( null != startValidTime && null != endValidTime && startValidTime.size() == endValidTime.size() ){
+            for( int i = 0; i < startValidTime.size(); i++ ){
+                Date startTime = startValidTime.get(i);
+                Date endTime = endValidTime.get(i);
+
+                // Are we between them yet?
+                if( startTime.compareTo(when) == 0 || startTime.before(when) ){
+                    // Start time is now or it's before the target time.
+
+                    if( endTime.compareTo(when) == 0 || endTime.after(when) ){
+                        // End time is now, or it's after the target time.
+
+                        return i;
+                    }
+                }
+            }
+        }
+
+        // Do we just have a bunch of start times?
+        if( null != startValidTime && null == endValidTime && !startValidTime.isEmpty() ){
+            for( int i = 0; i < startValidTime.size(); i++ ){
+                Date startTime = startValidTime.get(i);
+
+                // Are we between them yet?
+                if( startTime.compareTo(when) == 0 || startTime.before(when) ){
+                    // Start time is now or it's before the target time.
+
+                    // Is the next element after our time, or are we at the end?
+                    if( startValidTime.size() == i ){
+                        // We're at the end of the list, so we have to return this one.
+                        return i;
+                    }
+
+                    // Check to see if we're before the next interval..
+                    if( startValidTime.size() > i + 1 ){
+                        Date nextTimeInterval = startValidTime.get(i + 1);
+
+                        if( nextTimeInterval.compareTo(when) == 0 || nextTimeInterval.after(when) ){
+                            return i;
+                        }
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TimeLayout that = (TimeLayout) o;
+
+        if (layoutKey != null ? !layoutKey.equals(that.layoutKey) : that.layoutKey != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return layoutKey != null ? layoutKey.hashCode() : 0;
+    }
 }

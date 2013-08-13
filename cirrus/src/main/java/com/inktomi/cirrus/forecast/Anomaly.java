@@ -14,7 +14,7 @@ public class Anomaly {
     @Element
     public String name;
 
-    @ElementList(entry = "value")
+    @ElementList(entry = "value", inline = true)
     public List<Value> value;
 
     @Attribute(name = "type", required = true)

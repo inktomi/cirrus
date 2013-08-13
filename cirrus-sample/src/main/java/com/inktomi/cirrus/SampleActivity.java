@@ -22,12 +22,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.inktomi.cirrus.WeatherClient;
 import com.inktomi.cirrus.forecast.DWML;
 import com.inktomi.cirrus.forecast.Data;
 import com.inktomi.cirrus.forecast.Parameters;
 import com.inktomi.cirrus.forecast.TemperatureValue;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,7 +54,7 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
     /*
      * Define the weather client which we'll use to talk to the National Digital Forecast Database
      */
-    private WeatherClient mWeatherClient;
+    private CirrusClient mCirrusClient;
 
     private TextView mApparentTemperature;
     private TextView mHourlyMaxTemperature;
@@ -74,7 +74,7 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
         /*
          * Wire up our weather client.
          */
-        mWeatherClient = new WeatherClient(this);
+        mCirrusClient = new CirrusClient(this);
 
         // Get handles to the views.
         mApparentTemperature = (TextView) findViewById(R.id.apparent_temp);
@@ -186,7 +186,7 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
 
         Toast.makeText(this, "Location is " + getLocation().getLatitude() + ", " + getLocation().getLongitude(), Toast.LENGTH_LONG).show();
 
-        mWeatherClient.getWeatherForecast(getLocation().getLatitude(), getLocation().getLongitude(), 1,
+        mCirrusClient.getWeatherForecast(getLocation().getLatitude(), getLocation().getLongitude(),
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
@@ -216,12 +216,8 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
         }
 
         // Set the current temperature
-        TemperatureValue hourlyTemp = mWeatherClient.getCurrentTemperature(response);
+        TemperatureValue hourlyTemp = WeatherUtils.getForecastMaximumTemperature(response, new Date());
         mHourlyMaxTemperature.setText(getString(R.string.hourly_max_temp, hourlyTemp.value));
-
-        // Set the feels like temperature
-        TemperatureValue feelsLike = mWeatherClient.getFeelsLikeTemperature(response);
-        mApparentTemperature.setText(getString(R.string.apparent_temp, feelsLike.value));
 
         if( null != parameters ){
             setWeatherConditionIcon(parameters.conditionsIcon);

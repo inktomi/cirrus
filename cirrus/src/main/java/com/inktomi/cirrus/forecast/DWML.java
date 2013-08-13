@@ -16,7 +16,7 @@ public class DWML {
     @ElementList(inline = true, name = "data")
     public List<Data> data;
 
-    @Attribute
+    @Attribute(required = false)
     public float version;
 
     @Attribute(required = false)
