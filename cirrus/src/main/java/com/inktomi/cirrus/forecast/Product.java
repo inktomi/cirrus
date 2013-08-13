@@ -6,13 +6,13 @@ import org.simpleframework.xml.Element;
 @Element
 public class Product {
 
-    @Element(name = "title")
+    @Element(name = "title", required = false)
     public String title;
 
-    @Element(name = "field")
+    @Element(name = "field", required = false)
     public Field field;
 
-    @Element(name = "category")
+    @Element(name = "category", required = false)
     public Category category;
 
     @Element(name = "creation-date", required = false)

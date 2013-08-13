@@ -8,18 +8,18 @@ public class Source {
     @Element(name = "more-information", required = true)
     public String moreInformation;
 
-    @Element(name = "production-center")
+    @Element(name = "production-center", required = false)
     public ProductionCenter productionCenter;
 
-    @Element
+    @Element(required = false)
     public String disclaimer;
 
-    @Element
+    @Element(required = false)
     public String credit;
 
-    @Element(name = "credit-logo")
+    @Element(name = "credit-logo", required = false)
     public String creditLogo;
 
-    @Element
+    @Element(required = false)
     public String feedback;
 }

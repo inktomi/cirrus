@@ -20,5 +20,8 @@ public class DWML {
     public float version;
 
     @Attribute(required = false)
+    public String language;
+
+    @Attribute(required = false)
     public String noNamespaceSchemaLocation;
 }

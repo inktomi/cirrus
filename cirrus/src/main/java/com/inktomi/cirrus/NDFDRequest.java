@@ -16,6 +16,7 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.transform.Matcher;
 import org.simpleframework.xml.transform.Transform;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 /**

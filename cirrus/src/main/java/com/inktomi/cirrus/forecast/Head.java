@@ -9,4 +9,7 @@ public class Head {
 
     @Element(name = "source")
     public Source source;
+
+    @Element(name = "link", required = false)
+    public String link;
 }

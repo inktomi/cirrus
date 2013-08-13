@@ -15,6 +15,6 @@ public class Height {
     @Attribute(name = "datum", required = true)
     public Datum datum;
 
-    @Attribute(name = "height-units")
+    @Attribute(name = "height-units", required = false)
     public HeightUnits heightUnits;
 }

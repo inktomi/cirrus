@@ -14,7 +14,12 @@ public class DateTransform implements Transform<Date> {
     public DateTransform() {}
 
     public Date read(String value) throws Exception {
-       return DATE_FORMAT.parse(value);
+        // If we have NA, default to being valid now.
+        if( value.equals("NA") ){
+            return new Date();
+        }
+
+        return DATE_FORMAT.parse(value);
     }
 
     public String write(Date value) throws Exception {

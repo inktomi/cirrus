@@ -937,8 +937,6 @@ public class WeatherParseTest extends AndroidTestCase {
         assertNotNull("DWML response was null for url: " + url, response);
         assertNotNull("Data was null for url: " + url, response.data);
         assertTrue("Data did not have any elements for url: " + url, response.data.size() > 0);
-        assertNotNull("Data did not have any time layouts in it for url: " + url, response.data.get(0).timeLayout);
-        assertNotNull("Data did not have any parameters in it for url: " + url, response.data.get(0).parameters);
 
         Calendar trialDate = new GregorianCalendar();
         trialDate.add(Calendar.DAY_OF_YEAR, 1);
@@ -948,16 +946,18 @@ public class WeatherParseTest extends AndroidTestCase {
         TemperatureValue max = WeatherUtils.getForecastMaximumTemperature(response, trialDate.getTime());
         assertNotNull("Did not get a maximum temperature", max);
 
-        // 11 PM tomorrow should not have a max temperature.
+        // 11 PM tomorrow should have a max temperature.
         trialDate.set(Calendar.HOUR, 23);
         TemperatureValue nightTimeMax = WeatherUtils.getForecastMaximumTemperature(response, trialDate.getTime());
-        assertNull("Found a max temperature for night time?", nightTimeMax);
+        assertNotNull("Found a max temperature for night time?", nightTimeMax);
 
         // 11 PM tomorrow should have a minimum temperature.
         TemperatureValue nightTimeMin = WeatherUtils.getForecastMinimumTemperature(response, trialDate.getTime());
         assertNotNull("Did not get a minimum temperature for night time?", nightTimeMin);
 
-
+        // For "Now" we should always get a weather condition
+        String weatherCondition = WeatherUtils.getCurrentWeatherConditions(response);
+        assertNotNull("Did not get any weather conditions for the current time?", weatherCondition);
     }
 
     private String getTestUrl(double latitude, double longitude) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {

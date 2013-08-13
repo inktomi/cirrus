@@ -5,11 +5,14 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Text;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Element
 public class DecimalVal {
+    private static final Pattern ALL_DIGITS = Pattern.compile("^[\\d.]*$");
 
-    @Text(required = false)
     public BigDecimal value;
 
     @Attribute(name = "nil", required = false, empty = "false")
@@ -23,4 +26,18 @@ public class DecimalVal {
 
     @Attribute(name = "type", required = false)
     public DataSource type;
+
+    @Text
+    public void setValue(String value){
+        Matcher allDigitMatcher = ALL_DIGITS.matcher(value);
+
+        if( allDigitMatcher.matches() ){
+            this.value = new BigDecimal(value);
+        }
+    }
+
+    @Text
+    public String getValue() {
+        return value.toString();
+    }
 }

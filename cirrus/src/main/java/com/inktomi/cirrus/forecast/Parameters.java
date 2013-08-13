@@ -6,10 +6,16 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Text;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Element
 @SuppressWarnings({"unused"})
 public class Parameters {
+
+    private static final Pattern ALL_DIGITS = Pattern.compile("^\\d*$");
 
     @ElementList(inline = true, entry = "categories", required = false)
     public List<Categories> categories;
@@ -64,6 +70,9 @@ public class Parameters {
 
     @ElementList(inline = true, entry = "water-state", required = false)
     public List<Parameters.WaterState> waterState;
+
+    @ElementList(inline = true, entry = "wave", required = false)
+    public List<WaterState.Waves> waves;
 
     @Attribute(name = "applicable-location", required = true)
     public String applicableLocation;
@@ -213,7 +222,7 @@ public class Parameters {
     @Element
     public static class Direction {
 
-        @Element
+        @Element(required = false)
         public String name;
 
         @ElementList(inline = true, entry = "value", required = false)
@@ -257,7 +266,8 @@ public class Parameters {
 
     @Element
     public static class FireWeather {
-        @Element
+
+        @Element(required = false)
         public String name;
 
         @ElementList(entry = "value", inline = true, required = false)
@@ -328,7 +338,7 @@ public class Parameters {
     @Element
     public static class Humidity {
 
-        @Element
+        @Element(required = false)
         public String name;
 
         @ElementList(entry = "value", required = false, inline = true)
@@ -351,7 +361,8 @@ public class Parameters {
 
         @Element
         public static class Value {
-            @Text
+            private static final Pattern ALL_DIGITS = Pattern.compile("^\\d*$");
+
             public BigInteger value;
 
             @Attribute(name = "upper-range", required = false)
@@ -359,6 +370,20 @@ public class Parameters {
 
             @Attribute(name = "lower-range", required = false)
             public Integer lowerRange;
+
+            @Text(required = false)
+            public void setValue(String value){
+                Matcher allDigitMatcher = ALL_DIGITS.matcher(value);
+
+                if( allDigitMatcher.matches() ){
+                    this.value = new BigInteger(value);
+                }
+            }
+
+            @Text(required = false)
+            public String getValue() {
+                return value.toString();
+            }
         }
     }
 
@@ -418,7 +443,7 @@ public class Parameters {
     @Element
     public static class Pressure {
 
-        @Element
+        @Element(required = false)
         public String name;
 
         @ElementList(entry = "value", required = false, inline = true)
@@ -443,7 +468,7 @@ public class Parameters {
 
     @Element
     public static class ProbabilisticCondition {
-        @Element
+        @Element(required = false)
         public String name;
 
         @ElementList(entry = "value", required = false, inline = true)
@@ -480,7 +505,7 @@ public class Parameters {
     @Element
     public static class ProbabilityOfPrecipitation {
 
-        @Element
+        @Element(required = false)
         public String name;
 
         @ElementList(entry = "value", inline = true, required = false)
@@ -590,7 +615,7 @@ public class Parameters {
         @Element
         public static class Seas {
 
-            @Element
+            @Element(required = false)
             public String name;
 
             @ElementList(entry = "value", required = true)
@@ -612,7 +637,7 @@ public class Parameters {
         @Element
         public static class Swell {
 
-            @Element
+            @Element(required = false)
             public String name;
 
             @Element(name = "value", required = false)
@@ -654,11 +679,13 @@ public class Parameters {
 
         @Element
         public static class Waves {
-            @Element
+            @Element(required = false)
             public String name;
 
-            @ElementList(entry = "value", required = true, inline = true)
             public List<BigInteger> value;
+
+            @Attribute(required = false, name = "time-layout")
+            public String timeLayout;
 
             @Attribute(name = "type", required = true)
             public String type;
@@ -677,6 +704,37 @@ public class Parameters {
 
             @Attribute(name = "steepness", required = false)
             public BigInteger steepness;
+
+            @ElementList(entry = "value", required = true, inline = true)
+            public void setValue(List<String> values){
+                value = new ArrayList<BigInteger>(values.size());
+
+                for (int i = 0, valuesSize = values.size(); i < valuesSize; i++) {
+                    String value = values.get(i);
+                    Matcher digits = ALL_DIGITS.matcher(value);
+
+                    if (digits.matches()) {
+                        this.value.add(new BigInteger(value));
+                    }
+                }
+            }
+
+            @ElementList(entry = "value", required = true, inline = true)
+            public List<String> getValue(){
+                List<String> rval = new ArrayList<String>();
+
+                if( null == value ){
+                    return null;
+                }
+
+                List<BigInteger> value1 = this.value;
+                for (int i = 0, value1Size = value1.size(); i < value1Size; i++) {
+                    BigInteger value = value1.get(i);
+                    rval.add(value.toString());
+                }
+
+                return rval;
+            }
         }
     }
 
@@ -747,11 +805,11 @@ public class Parameters {
 
     @Element
     public static class WindSpeed {
-        @Element
+        @Element(required = false)
         public String name;
 
         @ElementList(inline = true, entry = "value", required = false)
-        public List<WindspeedValue> value;
+        public List<WindSpeedValue> value;
 
         @ElementList(type = Parameters.WindSpeed.ValueWithUncertainty.class, entry = "value-with-uncertainty", inline = true, required = false)
         public List<Parameters.WindSpeed.ValueWithUncertainty> valueWithUncertainty;
@@ -775,7 +833,7 @@ public class Parameters {
         public static class ValueWithUncertainty {
 
             @Element(name = "value", required = false)
-            public WindspeedValue value;
+            public WindSpeedValue value;
 
             @Element(name = "uncertainty", required = false)
             public Uncertainty uncertainty;
@@ -792,10 +850,10 @@ public class Parameters {
     @Element
     public static class WordedForecast {
 
-        @Text
+        @Element(required = false)
         public String name;
 
-        @ElementList(entry = "text", inline = true)
+        @ElementList(entry = "text", inline = true, required = false)
         public List<String> text;
 
         @Attribute(name = "time-layout", required = true)

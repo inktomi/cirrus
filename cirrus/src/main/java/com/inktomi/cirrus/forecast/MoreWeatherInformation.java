@@ -7,7 +7,7 @@ import org.simpleframework.xml.Text;
 @Element
 public class MoreWeatherInformation {
 
-    @Text
+    @Text(required = false)
     public String value;
 
     @Attribute(name = "applicable-location", required = true)

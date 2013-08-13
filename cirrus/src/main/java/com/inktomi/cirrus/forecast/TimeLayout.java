@@ -8,12 +8,16 @@
 
 package com.inktomi.cirrus.forecast;
 
+import android.util.Log;
+
 import com.android.internal.util.Predicate;
+import com.inktomi.cirrus.DateTransform;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;

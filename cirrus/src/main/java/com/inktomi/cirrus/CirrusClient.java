@@ -17,8 +17,6 @@ import java.util.GregorianCalendar;
 
 public class CirrusClient {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-
     private RequestQueue mRequestQueue;
 
     public CirrusClient(Context context) {
@@ -46,11 +44,20 @@ public class CirrusClient {
     private String getWeatherForecastUrl(Double latitude, Double longitude){
         // Build out the URL
         StringBuilder url = new StringBuilder(URLStrings.NDFDClient);
-        url.append("?").append(URLStrings.LATITIDE).append("=").append(latitude);
+//        url.append("?whichClient=NDFDgen&product=glance&Unit=e&maxt=maxt&mint=mint&wx=wx&icons=icons&wwa=wwa");
+        url.append("&").append(URLStrings.LATITIDE).append("=").append(latitude);
         url.append("&").append(URLStrings.LONGITUDE).append("=").append(longitude);
 
-        // And we want the current conditions and forecast.
-        url.append("&").append("numDays").append("=").append("1");
+//        // Start now, go to the end of the day for data
+//        Calendar today = new GregorianCalendar();
+//        url.append("&begin=").append(DATE_FORMAT.format(today.getTime()));
+//
+//        today.add(Calendar.DAY_OF_YEAR, 1);
+//        today.set(Calendar.HOUR_OF_DAY, 0);
+//        today.set(Calendar.MINUTE, 0);
+//        today.set(Calendar.SECOND, 0);
+//
+//        url.append("&end=").append(DATE_FORMAT.format(today.getTime()));
 
         return url.toString();
     }

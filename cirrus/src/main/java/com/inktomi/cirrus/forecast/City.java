@@ -13,6 +13,6 @@ public class City {
     @Attribute(name = "state", required = true)
     public String state;
 
-    @Attribute(name = "summarization")
+    @Attribute(name = "summarization", required = false)
     public String summarization;
 }
