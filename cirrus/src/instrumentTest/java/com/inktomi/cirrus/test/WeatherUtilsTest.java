@@ -57,17 +57,53 @@ public class WeatherUtilsTest extends AndroidTestCase {
     }
 
     @SmallTest
-    public void testGetForecastTemperature(){
+    public void testGetForecastMaxTemperature(){
 
         Calendar when = new GregorianCalendar();
         when.set(Calendar.DAY_OF_MONTH, 12);
         when.set(Calendar.MONTH, Calendar.AUGUST);
         when.set(Calendar.YEAR, 2013);
+        when.set(Calendar.HOUR, 8);
         when.set(Calendar.MINUTE, 0);
         when.set(Calendar.SECOND, 0);
 
         TemperatureValue value = WeatherUtils.getForecastMaximumTemperature(oneDay, when.getTime());
 
         assertNotNull("Temperature value should not be null for input.", value);
+        assertEquals("Temperature value did not have the proper temperature.", 74, value.value.intValue());
+    }
+
+    @SmallTest
+    public void testGetForecastMinTemperature(){
+
+        Calendar when = new GregorianCalendar();
+        when.set(Calendar.DAY_OF_MONTH, 12);
+        when.set(Calendar.MONTH, Calendar.AUGUST);
+        when.set(Calendar.YEAR, 2013);
+        when.set(Calendar.HOUR, 23);
+        when.set(Calendar.MINUTE, 0);
+        when.set(Calendar.SECOND, 0);
+
+        TemperatureValue value = WeatherUtils.getForecastMinimumTemperature(oneDay, when.getTime());
+
+        assertNotNull("Temperature value should not be null for input.", value);
+        assertEquals("Temperature value did not have the proper temperature.", 62, value.value.intValue());
+    }
+
+    @SmallTest
+    public void testGetForecastHourlyTemperature(){
+
+        Calendar when = new GregorianCalendar();
+        when.set(Calendar.DAY_OF_MONTH, 12);
+        when.set(Calendar.MONTH, Calendar.AUGUST);
+        when.set(Calendar.YEAR, 2013);
+        when.set(Calendar.HOUR, 8);
+        when.set(Calendar.MINUTE, 0);
+        when.set(Calendar.SECOND, 0);
+
+        TemperatureValue value = WeatherUtils.getForecastHourlyTemperature(oneDay, when.getTime());
+
+        assertNotNull("Temperature value should not be null for input.", value);
+        assertEquals("Temperature value did not have the proper temperature.", 63, value.value.intValue());
     }
 }

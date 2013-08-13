@@ -8,8 +8,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.inktomi.cirrus.forecast.DWML;
+import com.inktomi.cirrus.forecast.Error;
 
 import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.ElementException;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.transform.Matcher;
 import org.simpleframework.xml.transform.Transform;
@@ -48,8 +50,18 @@ public class NDFDRequest extends Request<DWML> {
         DWML rval;
         try {
             rval = mSerializer.read(com.inktomi.cirrus.forecast.DWML.class, new String(response.data));
+        } catch (ElementException e){
+            Log.e(TAG, "Failed to read DWML format. Trying error class.", e);
+            try {
+                Error errorResponse = mSerializer.read(Error.class, new String(response.data));
+
+                return Response.error(new VolleyError(errorResponse.message.body));
+            } catch (Exception e1) {
+                Log.e(TAG, "Failed to read DWML format.", e);
+                return Response.error(new VolleyError(e.getMessage(), e));
+            }
         } catch (Exception e) {
-            Log.e(TAG, "Failed to read DWML format", e);
+            Log.e(TAG, "Failed to read DWML format.", e);
             return Response.error(new VolleyError(e.getMessage(), e));
         }
 

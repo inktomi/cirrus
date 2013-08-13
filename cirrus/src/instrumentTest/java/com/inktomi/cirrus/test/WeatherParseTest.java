@@ -7,6 +7,7 @@ import android.util.Log;
 import com.inktomi.cirrus.DateTransform;
 import com.inktomi.cirrus.EnumTransform;
 import com.inktomi.cirrus.CirrusClient;
+import com.inktomi.cirrus.WeatherUtils;
 import com.inktomi.cirrus.forecast.DWML;
 import com.inktomi.cirrus.forecast.TemperatureValue;
 
@@ -15,19 +16,28 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.transform.Matcher;
 import org.simpleframework.xml.transform.Transform;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
+/**
+ * This class does a lot of network requests to get data from across the United States. Bad unit testing, but the point of this
+ * class is that the weather api has several small quirks that we need to handle. By requesting data directly from the government
+ * we're able to test for these small changes and ensure that we get at least our baseline data back.
+ *
+ * This takes a while to run. Set RUN_TESTS to false to skip these checks.
+ */
 public class WeatherParseTest extends AndroidTestCase {
     private static final String TAG = WeatherParseTest.class.getName();
+
+    // If this is FALSE we'll just skip these tests which will allow for much faster test running.
+    private static final boolean RUN_TESTS = Boolean.TRUE;
+
     private CirrusClient mCirrusClient;
 
     private Serializer mSerializer = new Persister(new Matcher() {
@@ -916,6 +926,10 @@ public class WeatherParseTest extends AndroidTestCase {
     }
 
     private void doTest(String url) throws Exception {
+        if( !RUN_TESTS ){
+            return;
+        }
+
         assertNotNull(url);
 
         DWML response = downloadUrl(url);
@@ -925,6 +939,25 @@ public class WeatherParseTest extends AndroidTestCase {
         assertTrue("Data did not have any elements for url: " + url, response.data.size() > 0);
         assertNotNull("Data did not have any time layouts in it for url: " + url, response.data.get(0).timeLayout);
         assertNotNull("Data did not have any parameters in it for url: " + url, response.data.get(0).parameters);
+
+        Calendar trialDate = new GregorianCalendar();
+        trialDate.add(Calendar.DAY_OF_YEAR, 1);
+        trialDate.set(Calendar.HOUR, 9);
+
+        // 9 am tomorrow should have a max temperature.
+        TemperatureValue max = WeatherUtils.getForecastMaximumTemperature(response, trialDate.getTime());
+        assertNotNull("Did not get a maximum temperature", max);
+
+        // 11 PM tomorrow should not have a max temperature.
+        trialDate.set(Calendar.HOUR, 23);
+        TemperatureValue nightTimeMax = WeatherUtils.getForecastMaximumTemperature(response, trialDate.getTime());
+        assertNull("Found a max temperature for night time?", nightTimeMax);
+
+        // 11 PM tomorrow should have a minimum temperature.
+        TemperatureValue nightTimeMin = WeatherUtils.getForecastMinimumTemperature(response, trialDate.getTime());
+        assertNotNull("Did not get a minimum temperature for night time?", nightTimeMin);
+
+
     }
 
     private String getTestUrl(double latitude, double longitude) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
