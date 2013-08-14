@@ -53,8 +53,8 @@ public class Parameters {
     @ElementList(inline = true, entry = "weather", required = false)
     public List<Parameters.Weather> weather;
 
-    @ElementList(inline = true, entry = "conditions-icon", required = false)
-    public List<Parameters.ConditionsIcon> conditionsIcon;
+    @Element(name = "conditions-icon", required = false)
+    public Parameters.ConditionsIcon conditionsIcon;
 
     @ElementList(inline = true, entry = "hazards", required = false)
     public List<Parameters.Hazards> hazards;

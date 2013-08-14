@@ -9,6 +9,7 @@ import com.inktomi.cirrus.EnumTransform;
 import com.inktomi.cirrus.CirrusClient;
 import com.inktomi.cirrus.WeatherUtils;
 import com.inktomi.cirrus.forecast.DWML;
+import com.inktomi.cirrus.forecast.Icon;
 import com.inktomi.cirrus.forecast.TemperatureValue;
 
 import org.simpleframework.xml.Serializer;
@@ -958,6 +959,9 @@ public class WeatherParseTest extends AndroidTestCase {
         // For "Now" we should always get a weather condition
         String weatherCondition = WeatherUtils.getCurrentWeatherConditions(response);
         assertNotNull("Did not get any weather conditions for the current time?", weatherCondition);
+
+        Icon tomorrowNightsIcon = WeatherUtils.getForecastWeatherIcon(response, trialDate.getTime());
+        assertNotNull("Did not have a weather icon for tomorrow evening?", tomorrowNightsIcon);
     }
 
     private String getTestUrl(double latitude, double longitude) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {

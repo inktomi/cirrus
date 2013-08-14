@@ -9,6 +9,7 @@ import com.inktomi.cirrus.forecast.Parameters;
 import com.inktomi.cirrus.forecast.TemperatureValue;
 import com.inktomi.cirrus.forecast.TimeLayout;
 
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A helper class which makes it easier to get information from the data returned
@@ -312,6 +315,108 @@ public class WeatherUtils {
 
             if( null != conditions ){
                 return conditions.weatherSummary;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the Cirrus Icon representation of the icon included for the current conditions.
+     *
+     * Note that this call will often lead to a null response, because the conditions icon is only included
+     * in the current observations about 80% the time.
+     *
+     * @param response the DWML to get the icon from.
+     * @return an Icon or null if we didn't have one.
+     */
+    public static Icon getCurrentWeatherIcon(DWML response) {
+        Data responseData = null;
+        if (null != response.data && !response.data.isEmpty()) {
+
+            // We need to pull the forecast data out.
+            for( int i = 0; i < response.data.size(); i++ ){
+                Data trialSet = response.data.get(i);
+
+                if( null != trialSet.type && trialSet.type.equals("current observations") ){
+                    responseData = trialSet;
+                }
+            }
+        }
+
+        return getIcon(null, responseData);
+    }
+
+    public static Icon getForecastWeatherIcon(DWML response, Date when) {
+        Data responseData = null;
+        if (null != response.data && !response.data.isEmpty()) {
+
+            // We need to pull the forecast data out.
+            for( int i = 0; i < response.data.size(); i++ ){
+                Data trialSet = response.data.get(i);
+
+                if( null != trialSet.type && trialSet.type.equals("forecast") ){
+                    responseData = trialSet;
+                }
+            }
+        }
+
+        return getIcon(when, responseData);
+    }
+
+    private static Icon getIcon(Date when, Data responseData) {
+        Parameters parameters = null;
+        if (null != responseData && null != responseData.parameters && !responseData.parameters.isEmpty() ) {
+            parameters = responseData.parameters.get(0);
+        }
+
+        Parameters.ConditionsIcon conditionsIcon = null;
+
+        if( null != parameters ){
+            conditionsIcon = parameters.conditionsIcon;
+        }
+
+        if( null != conditionsIcon ){
+            // What temperature index should we look for?
+            String timeKey = conditionsIcon.timeLayout;
+
+            // Find the layout to use.
+            int forecastIndex = -1;
+            if( null != responseData.timeLayout && !responseData.timeLayout.isEmpty() ){
+                Collections.sort(responseData.timeLayout, TIME_LAYOUT_COMPARATOR);
+
+                TimeLayout predicate = new TimeLayout();
+                predicate.layoutKey = timeKey;
+
+                int layoutPosition = Collections.binarySearch(responseData.timeLayout, predicate, TIME_LAYOUT_COMPARATOR);
+
+                if( layoutPosition > -1 ){
+                    TimeLayout timeLayout = responseData.timeLayout.get(layoutPosition);
+
+                    if( null == when ){
+                        forecastIndex = 0;
+                    } else {
+                        forecastIndex = timeLayout.getIndexForTime(when);
+                    }
+                }
+            }
+
+            String iconLink = null;
+            if( forecastIndex > -1 ){
+                // Get the weather conditions out.
+                iconLink = conditionsIcon.iconLink.get(forecastIndex);
+            }
+
+            // Now figure out which Icon matches up with our icon's link
+            // Get the filename out of the icon link.
+
+            Pattern getConditionCode = Pattern.compile("^.*/(?:hi_)?(?:m_)?n?([a-z]*)\\d*.(?:jpg||png)$");
+            Matcher codeMatcher = getConditionCode.matcher(iconLink);
+
+            if( codeMatcher.matches() ){
+                String code = codeMatcher.group(1);
+
+                return Icon.getByIconName(code);
             }
         }
 
