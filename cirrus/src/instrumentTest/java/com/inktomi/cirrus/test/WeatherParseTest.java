@@ -177,7 +177,7 @@ public class WeatherParseTest extends AndroidTestCase {
 
     @LargeTest
     public void testEureka() throws Exception {
-        String url = getTestUrl(41.33, -124.28);
+        String url = getTestUrl(40.80, -124.16);
 
         doTest(url);
     }
