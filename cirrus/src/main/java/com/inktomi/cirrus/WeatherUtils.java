@@ -1,24 +1,16 @@
 package com.inktomi.cirrus;
 
-import android.util.Log;
-
-import com.inktomi.cirrus.forecast.DWML;
+import com.inktomi.cirrus.forecast.WeatherResponse;
 import com.inktomi.cirrus.forecast.Data;
 import com.inktomi.cirrus.forecast.Icon;
 import com.inktomi.cirrus.forecast.Parameters;
 import com.inktomi.cirrus.forecast.TemperatureValue;
 import com.inktomi.cirrus.forecast.TimeLayout;
 
-import java.net.URI;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -66,7 +58,7 @@ public class WeatherUtils {
      *
      * @param weather the response from getWeatherForecast that you want to get the current hourly temperature from.
      */
-    public static TemperatureValue getForecastMaximumTemperature(DWML weather, Date when){
+    public static TemperatureValue getForecastMaximumTemperature(WeatherResponse weather, Date when){
         Data responseData = null;
         if (null != weather.data && !weather.data.isEmpty()) {
 
@@ -129,7 +121,7 @@ public class WeatherUtils {
         return null;
     }
 
-    public static TemperatureValue getCurrentTemperature(DWML weather){
+    public static TemperatureValue getCurrentTemperature(WeatherResponse weather){
         Data responseData = null;
         if (null != weather.data && !weather.data.isEmpty()) {
 
@@ -169,7 +161,7 @@ public class WeatherUtils {
         return temp.value.get(0);
     }
 
-    public static TemperatureValue getForecastMinimumTemperature(DWML weather, Date when){
+    public static TemperatureValue getForecastMinimumTemperature(WeatherResponse weather, Date when){
         Data responseData = null;
         if (null != weather.data && !weather.data.isEmpty()) {
 
@@ -232,7 +224,7 @@ public class WeatherUtils {
         return null;
     }
 
-    public static String getForecastWeatherConditions(DWML response, Date when){
+    public static String getForecastWeatherConditions(WeatherResponse response, Date when){
         Data responseData = null;
         if (null != response.data && !response.data.isEmpty()) {
 
@@ -249,7 +241,7 @@ public class WeatherUtils {
         return getWeatherConditions(when, responseData);
     }
 
-    public static String getCurrentWeatherConditions(DWML response){
+    public static String getCurrentWeatherConditions(WeatherResponse response){
         Data responseData = null;
         if (null != response.data && !response.data.isEmpty()) {
 
@@ -327,10 +319,10 @@ public class WeatherUtils {
      * Note that this call will often lead to a null response, because the conditions icon is only included
      * in the current observations about 80% the time.
      *
-     * @param response the DWML to get the icon from.
+     * @param response the WeatherResponse to get the icon from.
      * @return an Icon or null if we didn't have one.
      */
-    public static Icon getCurrentWeatherIcon(DWML response) {
+    public static Icon getCurrentWeatherIcon(WeatherResponse response) {
         Data responseData = null;
         if (null != response.data && !response.data.isEmpty()) {
 
@@ -347,7 +339,7 @@ public class WeatherUtils {
         return getIcon(null, responseData);
     }
 
-    public static Icon getForecastWeatherIcon(DWML response, Date when) {
+    public static Icon getForecastWeatherIcon(WeatherResponse response, Date when) {
         Data responseData = null;
         if (null != response.data && !response.data.isEmpty()) {
 

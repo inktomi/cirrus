@@ -8,7 +8,7 @@ import com.inktomi.cirrus.DateTransform;
 import com.inktomi.cirrus.EnumTransform;
 import com.inktomi.cirrus.CirrusClient;
 import com.inktomi.cirrus.WeatherUtils;
-import com.inktomi.cirrus.forecast.DWML;
+import com.inktomi.cirrus.forecast.WeatherResponse;
 import com.inktomi.cirrus.forecast.Icon;
 import com.inktomi.cirrus.forecast.TemperatureValue;
 
@@ -933,7 +933,7 @@ public class WeatherParseTest extends AndroidTestCase {
 
         assertNotNull(url);
 
-        DWML response = downloadUrl(url);
+        WeatherResponse response = downloadUrl(url);
 
         assertNotNull("DWML response was null for url: " + url, response);
         assertNotNull("Data was null for url: " + url, response.data);
@@ -972,7 +972,7 @@ public class WeatherParseTest extends AndroidTestCase {
         return (String) method.invoke(mCirrusClient, latitude, longitude);
     }
 
-    private DWML downloadUrl(String myurl) throws Exception {
+    private WeatherResponse downloadUrl(String myurl) throws Exception {
         InputStream is = null;
         // Only display the first 500 characters of the retrieved
         // web page content.
@@ -992,7 +992,7 @@ public class WeatherParseTest extends AndroidTestCase {
             int response = conn.getResponseCode();
             is = conn.getInputStream();
 
-            return mSerializer.read(DWML.class, is);
+            return mSerializer.read(WeatherResponse.class, is);
 
             // Makes sure that the InputStream is closed after the app is
             // finished using it.

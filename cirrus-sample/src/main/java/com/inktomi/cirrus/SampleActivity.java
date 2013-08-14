@@ -22,7 +22,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.inktomi.cirrus.forecast.DWML;
+import com.inktomi.cirrus.forecast.WeatherResponse;
 import com.inktomi.cirrus.forecast.Data;
 import com.inktomi.cirrus.forecast.Parameters;
 import com.inktomi.cirrus.forecast.TemperatureValue;
@@ -193,9 +193,9 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
                         Toast.makeText(SampleActivity.this, "Failed to get a forecast!", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.Listener<DWML>() {
+                new Response.Listener<WeatherResponse>() {
                     @Override
-                    public void onResponse(DWML response) {
+                    public void onResponse(WeatherResponse response) {
                         Toast.makeText(SampleActivity.this, "Got a forecast!", Toast.LENGTH_SHORT).show();
 
                         setResponse(response);
@@ -204,7 +204,7 @@ public class SampleActivity extends FragmentActivity implements GooglePlayServic
         );
     }
 
-    private void setResponse(DWML response){
+    private void setResponse(WeatherResponse response){
         Data responseData = null;
         if (null != response.data && !response.data.isEmpty()) {
             responseData = response.data.get(0);

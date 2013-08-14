@@ -7,7 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.inktomi.cirrus.forecast.DWML;
+import com.inktomi.cirrus.forecast.WeatherResponse;
 import com.inktomi.cirrus.forecast.Error;
 
 import org.simpleframework.xml.Serializer;
@@ -16,13 +16,12 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.transform.Matcher;
 import org.simpleframework.xml.transform.Transform;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 /**
  * Parses the XML that we get from the NDFD
  */
-public class NDFDRequest extends Request<DWML> {
+public class NDFDRequest extends Request<WeatherResponse> {
     private static final String TAG = NDFDRequest.class.getName();
 
     private Serializer mSerializer = new Persister(new Matcher() {
@@ -39,18 +38,18 @@ public class NDFDRequest extends Request<DWML> {
         }
     });
 
-    private final Response.Listener<DWML> mListener;
+    private final Response.Listener<WeatherResponse> mListener;
 
-    public NDFDRequest(int method, String url, Response.ErrorListener errorListener, Response.Listener<DWML> mListener) {
+    public NDFDRequest(int method, String url, Response.ErrorListener errorListener, Response.Listener<WeatherResponse> mListener) {
         super(method, url, errorListener);
         this.mListener = mListener;
     }
 
     @Override
-    protected Response<DWML> parseNetworkResponse(NetworkResponse response) {
-        DWML rval;
+    protected Response<WeatherResponse> parseNetworkResponse(NetworkResponse response) {
+        WeatherResponse rval;
         try {
-            rval = mSerializer.read(com.inktomi.cirrus.forecast.DWML.class, new String(response.data));
+            rval = mSerializer.read(WeatherResponse.class, new String(response.data));
         } catch (ElementException e){
             Log.e(TAG, "Failed to read DWML format. Trying error class.", e);
             try {
@@ -70,7 +69,7 @@ public class NDFDRequest extends Request<DWML> {
     }
 
     @Override
-    protected void deliverResponse(DWML response) {
+    protected void deliverResponse(WeatherResponse response) {
         mListener.onResponse(response);
     }
 }

@@ -6,7 +6,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import com.inktomi.cirrus.DateTransform;
 import com.inktomi.cirrus.EnumTransform;
 import com.inktomi.cirrus.WeatherUtils;
-import com.inktomi.cirrus.forecast.DWML;
+import com.inktomi.cirrus.forecast.WeatherResponse;
 import com.inktomi.cirrus.forecast.TemperatureValue;
 
 import org.simpleframework.xml.Serializer;
@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 /**
  * Created by mruno on 8/12/13.
@@ -26,7 +25,7 @@ import java.util.List;
 public class WeatherUtilsTest extends AndroidTestCase {
     private static final String TAG = WeatherUtilsTest.class.getName();
 
-    private DWML cloudy;
+    private WeatherResponse cloudy;
 
     private Serializer mSerializer = new Persister(new Matcher() {
         public Transform match(Class type) throws Exception {
@@ -48,7 +47,7 @@ public class WeatherUtilsTest extends AndroidTestCase {
 
         InputStream cloudyXml = getContext().getResources().getAssets().open("cloudy-day.xml");
 
-        cloudy = mSerializer.read(DWML.class, cloudyXml);
+        cloudy = mSerializer.read(WeatherResponse.class, cloudyXml);
 
         assertNotNull("Failed to read in cloudy day XML", cloudy);
     }

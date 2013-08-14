@@ -6,14 +6,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-import com.inktomi.cirrus.forecast.DWML;
-import com.inktomi.cirrus.forecast.Data;
-import com.inktomi.cirrus.forecast.Parameters;
-import com.inktomi.cirrus.forecast.TemperatureValue;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import com.inktomi.cirrus.forecast.WeatherResponse;
 
 public class CirrusClient {
 
@@ -28,7 +21,7 @@ public class CirrusClient {
      * @param latitude the latitude for the request
      * @param longitude the longitude for the request
      */
-    public void getWeatherForecast(double latitude, double longitude, Response.ErrorListener error, Response.Listener<DWML> success) {
+    public void getWeatherForecast(double latitude, double longitude, Response.ErrorListener error, Response.Listener<WeatherResponse> success) {
         final String requestUrl = getWeatherForecastUrl(latitude, longitude);
 
         NDFDRequest request = new NDFDRequest(

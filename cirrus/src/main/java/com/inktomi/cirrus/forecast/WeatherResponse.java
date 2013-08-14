@@ -7,8 +7,8 @@ import org.simpleframework.xml.Root;
 
 import java.util.List;
 
-@Root
-public class DWML {
+@Root(name = "dwml")
+public class WeatherResponse {
 
     @Element(name = "head")
     public Head head;
