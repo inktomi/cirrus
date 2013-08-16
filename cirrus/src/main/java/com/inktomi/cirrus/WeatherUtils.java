@@ -356,6 +356,64 @@ public class WeatherUtils {
         return getIcon(when, responseData);
     }
 
+    /**
+     * Returns the first forecast icon from the weather response.
+     * @param response the response to use.
+     * @return an Icon
+     */
+    public static Icon getUpcomingWeatherIcon(WeatherResponse response){
+        Data responseData = null;
+        if (null != response.data && !response.data.isEmpty()) {
+
+            // We need to pull the forecast data out.
+            for( int i = 0; i < response.data.size(); i++ ){
+                Data trialSet = response.data.get(i);
+
+                if( null != trialSet.type && trialSet.type.equals("forecast") ){
+                    responseData = trialSet;
+                }
+            }
+        }
+
+        Parameters parameters = null;
+        if (null != responseData && null != responseData.parameters && !responseData.parameters.isEmpty() ) {
+            parameters = responseData.parameters.get(0);
+        }
+
+        Parameters.ConditionsIcon conditionsIcon = null;
+
+        if( null != parameters ){
+            conditionsIcon = parameters.conditionsIcon;
+        }
+
+        if( null != conditionsIcon ){
+            // Find the layout to use.
+            int forecastIndex = 0;
+
+            String iconLink = null;
+            if( !conditionsIcon.iconLink.isEmpty() ){
+                // Get the weather conditions out.
+                iconLink = conditionsIcon.iconLink.get(forecastIndex);
+            }
+
+            // Now figure out which Icon matches up with our icon's link
+            // Get the filename out of the icon link.
+            if( null != iconLink ){
+
+                Pattern getConditionCode = Pattern.compile("^.*/(?:hi_)?(?:m_)?n?([a-z]*)\\d*.(?:jpg||png)$");
+                Matcher codeMatcher = getConditionCode.matcher(iconLink);
+
+                if( codeMatcher.matches() ){
+                    String code = codeMatcher.group(1);
+
+                    return Icon.getByIconName(code);
+                }
+            }
+        }
+
+        return null;
+    }
+
     private static Icon getIcon(Date when, Data responseData) {
         Parameters parameters = null;
         if (null != responseData && null != responseData.parameters && !responseData.parameters.isEmpty() ) {
@@ -401,14 +459,16 @@ public class WeatherUtils {
 
             // Now figure out which Icon matches up with our icon's link
             // Get the filename out of the icon link.
+            if( null != iconLink ){
 
-            Pattern getConditionCode = Pattern.compile("^.*/(?:hi_)?(?:m_)?n?([a-z]*)\\d*.(?:jpg||png)$");
-            Matcher codeMatcher = getConditionCode.matcher(iconLink);
+                Pattern getConditionCode = Pattern.compile("^.*/(?:hi_)?(?:m_)?n?([a-z]*)\\d*.(?:jpg||png)$");
+                Matcher codeMatcher = getConditionCode.matcher(iconLink);
 
-            if( codeMatcher.matches() ){
-                String code = codeMatcher.group(1);
+                if( codeMatcher.matches() ){
+                    String code = codeMatcher.group(1);
 
-                return Icon.getByIconName(code);
+                    return Icon.getByIconName(code);
+                }
             }
         }
 

@@ -962,6 +962,13 @@ public class WeatherParseTest extends AndroidTestCase {
 
         Icon tomorrowNightsIcon = WeatherUtils.getForecastWeatherIcon(response, trialDate.getTime());
         assertNotNull("Did not have a weather icon for tomorrow evening?", tomorrowNightsIcon);
+
+        Calendar now = new GregorianCalendar();
+        now.add(Calendar.HOUR_OF_DAY, 1);
+        now.set(Calendar.MINUTE, 0);
+        now.set(Calendar.SECOND, 0);
+        Icon currentIcon = WeatherUtils.getForecastWeatherIcon(response, now.getTime());
+        assertNotNull("Did not have an icon for an hour from now?", currentIcon);
     }
 
     private String getTestUrl(double latitude, double longitude) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
