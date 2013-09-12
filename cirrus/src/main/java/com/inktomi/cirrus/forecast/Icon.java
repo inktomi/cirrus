@@ -24,7 +24,7 @@ public enum Icon {
     FREEZING_RAIN("Freezing Rain", "^n?(fzra)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/fzra.jpg"),
     MIXED("Mixed", "^n?(mix)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/mix.jpg"),
     RAIN_AND_ICE_PELLETS("Rain & Ice Pellets", "^n?(raip)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/raip.jpg"),
-    THUNDERSTORM("Thunderstoms", "^n?(tsra)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/tsra.jpg"),
+    THUNDERSTORM("Thunderstorms", "^n?(tsra)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/tsra.jpg"),
     SCATTERED_THUNDERSTORM("Scattered Thunderstorms", "^n?(scttsra)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/scttsra.jpg"),
     CLEAR("Clear", "^n?(skc)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/skc.jpg"),
     FEW_CLOUDS("Few Clouds", "^n?(few)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/few.jpg"),
