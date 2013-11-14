@@ -158,7 +158,11 @@ public class WeatherUtils {
         }
 
         // No need for time layouts here!
-        return temp.value.get(0);
+        if( null != temp && null != temp.value && !temp.value.isEmpty()){
+            return temp.value.get(0);
+        }
+        
+        return null;
     }
 
     public static TemperatureValue getForecastMinimumTemperature(WeatherResponse weather, Date when){
