@@ -16,6 +16,7 @@ public enum Icon {
     DUST("Dust", "^n?(du)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/du.jpg"),
     SMOKE("Smoke", "^n?(fu)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/fu.jpg"),
     ICE_PELLET("Ice Pellets", "^n?(ip)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/ip.jpg"),
+    HAIL("Hail", "^n?(ip)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/ip.jpg"),
     SHOWER("Showers", "^n?(shwrs)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/hi_shwrs.jpg"),
     SHOWERING_RAIN("Showering Rain", "^n?(shra)\\d*$", "http://forecasts.weather.gov/weather/images/fcicons/shra.jpg"),
     RAIN("Rain", "^n?(ra)\\d*$", "http://graphical.weather.gov/xml/xml_fields_icon_weather_conditions.php"),
